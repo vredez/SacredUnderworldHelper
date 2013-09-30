@@ -6,137 +6,74 @@ using System.IO;
 
 namespace Sacred_Underworld_Helper
 {
-    struct SacredSettings
+    class SacredSettings
     {
-        public bool
-            AutoSave,
-            AutoTrackEnemy,
-            ChatAlpha,
-            CombineSlots,
-            DefaultSkills,
-            ExploreMap,
-            FirstLogin,
-            FontAA,
-            FontFilter,
-            FontPages,
-            ForceBlackShadow,
-            FSAAFilter,
-            Fullscreen,
-            GFX32,
-            GFXLimit128,
-            Log,
-            Logging,
-            NetLog,
-            PickupAnimation,
-            PickupAuto,
-            ScreenQuake,
-            ShowMovies,
-            ShowPotions,
-            ShowEnemyInfo,
-            TaskbarIcons,
-            UniqueColor,
-            Violence;
+		Dictionary<string, string> pairs;
+		string configFile;
 
-        public int
-            AutoSaveDelay,
-            ChatDelay,
-            ChatLines,
-            DetailLevel,
-            MinimapAlpha,
-            MusicVolume,
-            NightDarkness,
-            SFXVolume,
-            VoiceVolume,
-            WarningLevel;
+		public ICollection<string> Settings
+		{
+			get { return pairs.Keys; }
+		}
 
+		public string this[string setting]
+		{
+			get
+			{
+				return pairs.ContainsKey(setting) ? pairs[setting] : string.Empty;
+			}
+			set
+			{
+				if (pairs.ContainsKey(setting))
+					pairs[setting] = value;
+			}
+		}
 
-        public static SacredSettings FromFile(string file)
-        {
-            SacredSettings result = new SacredSettings();
+		public string ConfigFile
+		{
+			get { return configFile; }
+		}
 
-            string[] cfg = File.ReadAllLines(file);
-        
-            foreach (string line in cfg)
-            {
-                string[] pair = line.Split(new char[] { ':' }, 2);
+		public SacredSettings(string configFile)
+		{
+			this.configFile = configFile;
+			pairs = new Dictionary<string, string>();
+			string[] content = File.ReadAllLines(configFile);
+			char[] delimiter = {':'};
 
-                if (pair.Length != 2)
-                    continue;
+			foreach(string line in content)
+			{
+				string[] pair = line.Split(delimiter, 2, StringSplitOptions.RemoveEmptyEntries);
 
-                pair[0] = pair[0].Trim();
+				if (pair.Length == 2)
+				{
+					string key = pair[0].Trim();
+					string value = pair[1].Trim();
 
-                if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    int value;
-                    if (!int.TryParse(pair[1], out value))
-                        continue;
-                    result.AutoSave = value != 0;
-                }
-                else if (pair[0].Equals("AUTOSAVEDELAY", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    int value;
-                    if (!int.TryParse(pair[1], out value))
-                        continue;
-                    result.AutoSaveDelay = value;
-                }
-                else if (pair[0].Equals("AUTOTRACKENEMY", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    int value;
-                    if (!int.TryParse(pair[1], out value))
-                        continue;
-                    result.AutoTrackEnemy = value != 0;
-                }
-                else if (pair[0].Equals("CHAT_ALPHA", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    int value;
-                    if (!int.TryParse(pair[1], out value))
-                        continue;
-                    result.ChatAlpha = value != 0;
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
+					if(!pairs.ContainsKey(key))
+						pairs.Add(key, value);
+				}
+			}
+		}
 
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
+		public void Save(string fileName)
+		{
+			using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
+			{
+				using (StreamWriter sw = new StreamWriter(fs))
+				{
+					foreach (string setting in Settings)
+						sw.WriteLine("{0} : {1}", setting, pairs[setting]);
+					
+					sw.Close();
+				}
+			}
+			this.configFile = fileName;
+		}
 
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
-
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
-
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
-
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
-
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
-
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
-
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
-
-                }
-                else if (pair[0].Equals("AUTOSAVE", StringComparison.InvariantCultureIgnoreCase))
-                {
-
-                }
-            }
-
-            return result;
-        }
-
-    }
+		public void Save()
+		{
+			Save(configFile);
+		}
+	}
 }
