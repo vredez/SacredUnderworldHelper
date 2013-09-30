@@ -50,21 +50,37 @@ namespace Sacred_Underworld_Helper
 					string key = pair[0].Trim();
 					string value = pair[1].Trim();
 
-					if(!pairs.ContainsKey(key))
-						pairs.Add(key, value);
+                    if (!pairs.ContainsKey(key))
+                        pairs.Add(key, value);
+                    else
+                        pairs[key] += "; " + value;
 				}
 			}
 		}
 
 		public void Save(string fileName)
 		{
-			using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
+            char[] delimiter = {';'};
+
+			using (FileStream fs = new FileStream(fileName, FileMode.Create))
 			{
 				using (StreamWriter sw = new StreamWriter(fs))
 				{
-					foreach (string setting in Settings)
-						sw.WriteLine("{0} : {1}", setting, pairs[setting]);
-					
+                    foreach (string setting in Settings)
+                    {
+                        string[] values = pairs[setting].Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+                        if (values.Length == 0)
+                        {
+                            sw.WriteLine("{0} : {1}", setting, pairs[setting].Trim());
+                            continue;
+                        }
+                        foreach (string value in values)
+                        {
+                            sw.WriteLine("{0} : {1}", setting, value.Trim());
+                        }
+                    }
+
+                    sw.Flush();
 					sw.Close();
 				}
 			}

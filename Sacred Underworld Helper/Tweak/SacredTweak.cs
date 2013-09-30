@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using System.Drawing;
+using System.Runtime.InteropServices;
 
-namespace Sacred_Underworld_Helper
+
+namespace Sacred_Underworld_Helper.Tweak
 {
     class SacredTweak
     {
         bool showClock;
         bool showGamingTime;
-        Font uiFont;
-        Color uiColor;
+
 
         public bool ShowClock
         {
@@ -26,20 +25,19 @@ namespace Sacred_Underworld_Helper
             set { showGamingTime = value; }
         }
 
-        public Font UIFont
-        {
-            get { return uiFont; }
-            set { uiFont = value; }
-        }
-
-        public Color UIColor
-        {
-            get { return uiColor; }
-            set { uiColor = value; }
-        }
-
         public SacredTweak()
         {
+
+        }
+
+        public void EnableFullscreenEmulation()
+        {
+
+        }
+
+        public void DisableFullscreenEmulation()
+        {
+
         }
     }
 }

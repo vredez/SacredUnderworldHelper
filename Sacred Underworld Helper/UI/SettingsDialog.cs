@@ -35,6 +35,19 @@ namespace Sacred_Underworld_Helper.UI
 			Setting = string.Empty;
 		}
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            Location = new Point
+            {
+                X = MousePosition.X + RectangleToClient(Bounds).X - textBox.Location.X - textBox.Font.Height / 2,
+                Y = MousePosition.Y + RectangleToClient(Bounds).Y - textBox.Location.Y - textBox.Height / 2
+            };
+
+            textBox.SelectAll();
+        }
+
 		private void TextBoxKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.End || e.KeyCode == Keys.Return)

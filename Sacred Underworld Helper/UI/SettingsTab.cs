@@ -33,7 +33,7 @@ namespace Sacred_Underworld_Helper.UI
 			listView.View = View.Details;
 			listView.FullRowSelect = true;
 			listView.MouseMove += listView_MouseMove;
-			listView.DoubleClick += listView_DoubleClick;
+			listView.MouseClick += listView_MouseClick;
 
 			columnSettings.Text = "Setting";
 			columnSettings.Width = 200;
@@ -90,9 +90,9 @@ namespace Sacred_Underworld_Helper.UI
 			listView.ResumeLayout();
 		}
 
-		void listView_DoubleClick(object sender, EventArgs e)
+		void listView_MouseClick(object sender, MouseEventArgs e)
 		{
-			if (listView.SelectedItems.Count == 1)
+			if (e.Button == MouseButtons.Left && listView.SelectedItems.Count == 1)
 			{
 				string setting = listView.SelectedItems[0].Text;
 				

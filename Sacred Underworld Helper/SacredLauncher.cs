@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using Microsoft.Win32;
 
 namespace Sacred_Underworld_Helper
 {
@@ -11,18 +12,20 @@ namespace Sacred_Underworld_Helper
     {
         string sacredDirectory;
         string underworldDirectory;
+        string sacredVersion;
+        string underworldVersion;
         List<string> parameters;
 
         Process proc;
 
         public bool IsSacredAvailable
         {
-            get { return !string.IsNullOrEmpty(sacredDirectory) && Directory.Exists(sacredDirectory); }
+            get { return !string.IsNullOrEmpty(sacredDirectory) && File.Exists(Path.Combine(sacredDirectory, "Sacred.exe")); }
         }
 
         public bool IsUnderworldAvailable
         {
-            get { return !string.IsNullOrEmpty(underworldDirectory) && Directory.Exists(underworldDirectory); }
+            get { return !string.IsNullOrEmpty(underworldDirectory) && File.Exists(Path.Combine(underworldDirectory, "sacred.exe")); }
         }
 
         public string SacredDirectory
@@ -35,6 +38,16 @@ namespace Sacred_Underworld_Helper
         {
             get { return underworldDirectory; }
             set { underworldDirectory = value; }
+        }
+
+        public string SacredVersion
+        {
+            get { return sacredVersion; }
+        }
+
+        public string UnderworldVersion
+        {
+            get { return underworldVersion; }
         }
 
         public List<String> Parameters
@@ -54,6 +67,20 @@ namespace Sacred_Underworld_Helper
         public SacredLauncher()
         {
             parameters = new List<string>();
+
+            RegistryKey sacred_reg = Registry.CurrentUser.OpenSubKey(@"Software\Ascaron Entertainment\Sacred");
+            if (sacred_reg != null)
+            {
+                sacredDirectory = sacred_reg.GetValue("InstallLocation").ToString();
+                sacredVersion = sacred_reg.GetValue("Version").ToString();
+            }
+
+            sacred_reg = Registry.CurrentUser.OpenSubKey(@"Software\Ascaron Entertainment\Sacred Underworld");
+            if (sacred_reg != null)
+            {
+                underworldDirectory = sacred_reg.GetValue("InstallLocation").ToString();
+                underworldVersion = sacred_reg.GetValue("Version").ToString();
+            }
         }
 
         public void LaunchSacred()
