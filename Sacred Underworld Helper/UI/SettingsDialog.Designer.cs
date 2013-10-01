@@ -1,4 +1,4 @@
-﻿namespace Sacred_Underworld_Helper.UI
+﻿namespace SacredUnderworldHelper.UI
 {
 	partial class SettingsDialog
 	{
@@ -33,9 +33,11 @@
             // 
             // textBox
             // 
-            this.textBox.Location = new System.Drawing.Point(12, 12);
+            this.textBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox.Location = new System.Drawing.Point(0, 0);
             this.textBox.Name = "textBox";
-            this.textBox.Size = new System.Drawing.Size(244, 22);
+            this.textBox.Size = new System.Drawing.Size(268, 22);
             this.textBox.TabIndex = 0;
             this.textBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxKeyDown);
             // 
@@ -43,10 +45,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(268, 47);
+            this.BackColor = System.Drawing.Color.Fuchsia;
+            this.ClientSize = new System.Drawing.Size(268, 22);
             this.Controls.Add(this.textBox);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsDialog";
@@ -54,6 +57,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Change $SETTING";
+            this.TransparencyKey = System.Drawing.Color.Fuchsia;
             this.ResumeLayout(false);
             this.PerformLayout();
 

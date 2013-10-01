@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using System.Windows.Forms;
 using Microsoft.Win32;
+using System.Runtime.InteropServices;
+using SacredUnderworldHelper.WinAPI;
+using System.Drawing;
 
-namespace Sacred_Underworld_Helper
+namespace SacredUnderworldHelper
 {
     class SacredLauncher
     {
@@ -15,8 +19,34 @@ namespace Sacred_Underworld_Helper
         string sacredVersion;
         string underworldVersion;
         List<string> parameters;
+        bool emulateFullScreen;
+        bool showClock;
+        bool showGamingTime;
 
         Process proc;
+
+        BlackScreen blackScreen;
+        Timer timer;
+
+        Size nativeResolution;
+        Size emulationResolution;
+
+        SacredSettings sacredSettings;
+        SacredSettings underworldSettings;
+
+        Font uiFont;
+
+        delegate void VoidPtr();
+
+        public event EventHandler SacredExited;
+
+        protected virtual void OnSacredExited()
+        {
+            if (SacredExited != null)
+                SacredExited(this, EventArgs.Empty);
+        }
+
+        #region "Properties"
 
         public bool IsSacredAvailable
         {
@@ -56,13 +86,51 @@ namespace Sacred_Underworld_Helper
             set { parameters = value; }
         }
 
-        public event EventHandler SacredExited;
-
-        protected virtual void OnSacredExited()
+        public bool EmulateFullScreen
         {
-            if (SacredExited != null)
-                SacredExited(this, EventArgs.Empty);
+            get { return emulateFullScreen; }
+            set { emulateFullScreen = value; }
         }
+
+        public bool ShowClock
+        {
+            get { return showClock; }
+            set { showClock = value; }
+        }
+
+        public bool ShowGamingTime
+        {
+            get { return showGamingTime; }
+            set { showGamingTime = value; }
+        }
+
+        public SacredSettings SacredSettings
+        {
+            get { return sacredSettings; }
+        }
+
+        public SacredSettings UnderworldSettings
+        {
+            get { return underworldSettings; }
+        }
+
+        #endregion
+
+        #region "Nested Types"
+
+        class BlackScreen : Form
+        {
+            public BlackScreen()
+            {
+                DoubleBuffered = true;
+                ShowInTaskbar = false;
+                FormBorderStyle = FormBorderStyle.None;
+                BackColor = Color.Black;
+                WindowState = FormWindowState.Maximized;
+            }
+        }
+
+        #endregion
 
         public SacredLauncher()
         {
@@ -81,15 +149,54 @@ namespace Sacred_Underworld_Helper
                 underworldDirectory = sacred_reg.GetValue("InstallLocation").ToString();
                 underworldVersion = sacred_reg.GetValue("Version").ToString();
             }
+
+            if (IsSacredAvailable)
+            {
+                sacredSettings = new SacredSettings(Path.Combine(SacredDirectory, "settings.cfg"));
+            }
+
+            if (IsUnderworldAvailable)
+            {
+                underworldSettings = new SacredSettings(Path.Combine(UnderworldDirectory, "settings.cfg"));
+            }
+
+            timer = new Timer();
+            timer.Interval = 100;
+            timer.Tick += TimerTick;
+
+            blackScreen = new BlackScreen();     
+            blackScreen.Paint += BlackScreenPaint;
+            blackScreen.Activated += BlackScreenActivated;
+
+            nativeResolution = Screen.PrimaryScreen.Bounds.Size;
+            emulationResolution = new Size
+            {
+                Width = (int)Math.Ceiling((768f * nativeResolution.Width) / nativeResolution.Height),
+                Height = 768
+            };
+
+            uiFont = new Font("AntiquaSSK", 18f);
         }
 
         public void LaunchSacred()
         {
+            if (emulateFullScreen && sacredSettings["FULLSCREEN"] == "1")
+            {
+                sacredSettings["FULLSCREEN"] = "0";
+                sacredSettings.Save();
+            }
+
             Launch("sacred.exe", sacredDirectory);
         }
 
         public void LaunchUnderworld()
         {
+            if (emulateFullScreen && underworldSettings["FULLSCREEN"] == "1")
+            {
+                underworldSettings["FULLSCREEN"] = "0";
+                underworldSettings.Save();
+            }
+
             Launch("sacred.exe", underworldDirectory);
         }
 
@@ -98,8 +205,11 @@ namespace Sacred_Underworld_Helper
             if (proc != null)
                 throw new Exception(string.Format("{0} is already running.", proc.ProcessName));
 
+            if (emulateFullScreen)
+                StartFullscreenEmulation();
+
             proc = new Process();
-            
+
             proc.StartInfo.FileName = Path.Combine(workDir, executable);
             proc.StartInfo.WorkingDirectory = workDir;
             proc.EnableRaisingEvents = true;
@@ -107,14 +217,97 @@ namespace Sacred_Underworld_Helper
             foreach (string param in parameters)
                 proc.StartInfo.Arguments += param + ' ';
 
-            proc.Exited += proc_Exited;
+            proc.Exited += ProcExited;
             proc.Start();
         }
 
-        void proc_Exited(object sender, EventArgs e)
+        void ProcExited(object sender, EventArgs e)
         {
+            StopFullscreenEmulation();
             proc = null;
             OnSacredExited();
+        }
+
+        void StartFullscreenEmulation()
+        {
+            SetTaskbarVisibility(false);
+            ChangeScreenResoltion(emulationResolution.Width, emulationResolution.Height);
+            blackScreen.Show();
+            if (showClock || showGamingTime)
+                timer.Start();
+        }
+
+        void StopFullscreenEmulation()
+        {
+            SetTaskbarVisibility(true);
+            timer.Stop();
+            blackScreen.Invoke(new VoidPtr(blackScreen.Close));
+            ChangeScreenResoltion(nativeResolution.Width, nativeResolution.Height);
+        }
+
+        void TimerTick(object sender, EventArgs e)
+        {
+            blackScreen.Invalidate();
+        }
+
+        void BlackScreenPaint(object sender, PaintEventArgs e)
+        {
+            if (proc == null) return;
+            
+            Graphics g = e.Graphics;
+
+            if (showClock)
+            {
+                string clock_text = DateTime.Now.ToShortTimeString();
+                SizeF text_size = g.MeasureString(clock_text, uiFont);
+
+                g.DrawString(clock_text, uiFont, Brushes.Red, blackScreen.ClientSize.Width - text_size.Width - 10, 10);
+            }
+
+            if (showGamingTime)
+            {
+                TimeSpan gamingTime = DateTime.Now - proc.StartTime;
+                g.DrawString(string.Format("{0:00}:{1:00}", gamingTime.Hours, gamingTime.Minutes), uiFont, Brushes.Red, 10, 10);
+            }
+        }
+
+        void BlackScreenActivated(object sender, EventArgs e)
+        {
+            if(proc != null && proc.MainWindowHandle != IntPtr.Zero)
+                Win32.SetForegroundWindow(proc.MainWindowHandle);
+        }
+
+        void ChangeScreenResoltion(int width, int height)
+        {
+            DEVMODE1 dm = new DEVMODE1();
+            dm.dmDeviceName = new String(new char[32]);
+            dm.dmFormName = new String(new char[32]);
+            dm.dmSize = (short)System.Runtime.InteropServices.Marshal.SizeOf(dm);
+
+            if (Win32.EnumDisplaySettings(null, Win32.ENUM_CURRENT_SETTINGS, ref dm) != 0)
+            {
+                dm.dmPelsWidth = width;
+                dm.dmPelsHeight = height;
+
+                int result = Win32.ChangeDisplaySettings(ref dm, Win32.CDS_TEST);
+
+                if (result != Win32.DISP_CHANGE_FAILED)
+                {
+                    Win32.ChangeDisplaySettings(ref dm, Win32.CDS_UPDATEREGISTRY);
+                }
+            }
+        }
+
+        void SetTaskbarVisibility(bool visibility)
+        {
+            int taskbar_handle = Win32.FindWindow("Shell_TrayWnd", "");
+            int startbutton_handle = Win32.FindWindow("Button", "Start");
+
+            if (taskbar_handle != 0)
+                Win32.ShowWindow(taskbar_handle, visibility ? Win32.SW_SHOW : Win32.SW_HIDE);
+
+            if (startbutton_handle != 0)
+                Win32.ShowWindow(startbutton_handle, visibility ? Win32.SW_SHOW : Win32.SW_HIDE);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace Sacred_Underworld_Helper.UI
+namespace SacredUnderworldHelper.UI
 {
     partial class SettingsTab : TabPage
 	{

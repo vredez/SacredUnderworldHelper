@@ -1,4 +1,4 @@
-﻿namespace Sacred_Underworld_Helper.UI
+﻿namespace SacredUnderworldHelper.UI
 {
     partial class MainForm
     {
@@ -28,14 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tab_launcher = new System.Windows.Forms.TabPage();
-            this.button_sacred = new System.Windows.Forms.Button();
-            this.button_underworld = new System.Windows.Forms.Button();
             this.groupBox_tweaks = new System.Windows.Forms.GroupBox();
-            this.checkBox_emulateFullscreen = new System.Windows.Forms.CheckBox();
-            this.checkBox_showClock = new System.Windows.Forms.CheckBox();
             this.checkBox_showGamingTime = new System.Windows.Forms.CheckBox();
+            this.checkBox_showClock = new System.Windows.Forms.CheckBox();
+            this.checkBox_emulateFullscreen = new System.Windows.Forms.CheckBox();
+            this.button_underworld = new System.Windows.Forms.Button();
+            this.button_sacred = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tab_launcher.SuspendLayout();
             this.groupBox_tweaks.SuspendLayout();
@@ -64,28 +65,6 @@
             this.tab_launcher.Text = "Launcher";
             this.tab_launcher.UseVisualStyleBackColor = true;
             // 
-            // button_sacred
-            // 
-            this.button_sacred.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button_sacred.Enabled = false;
-            this.button_sacred.Image = global::Sacred_Underworld_Helper.Properties.Resources.Sacred_new_4;
-            this.button_sacred.Location = new System.Drawing.Point(8, 6);
-            this.button_sacred.Name = "button_sacred";
-            this.button_sacred.Size = new System.Drawing.Size(135, 135);
-            this.button_sacred.TabIndex = 0;
-            this.button_sacred.UseVisualStyleBackColor = true;
-            // 
-            // button_underworld
-            // 
-            this.button_underworld.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button_underworld.Enabled = false;
-            this.button_underworld.Image = global::Sacred_Underworld_Helper.Properties.Resources.Sacred_Addon_new_4;
-            this.button_underworld.Location = new System.Drawing.Point(149, 6);
-            this.button_underworld.Name = "button_underworld";
-            this.button_underworld.Size = new System.Drawing.Size(135, 135);
-            this.button_underworld.TabIndex = 1;
-            this.button_underworld.UseVisualStyleBackColor = true;
-            // 
             // groupBox_tweaks
             // 
             this.groupBox_tweaks.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -101,18 +80,18 @@
             this.groupBox_tweaks.TabStop = false;
             this.groupBox_tweaks.Text = "Tweaks";
             // 
-            // checkBox_emulateFullscreen
+            // checkBox_showGamingTime
             // 
-            this.checkBox_emulateFullscreen.AutoSize = true;
-            this.checkBox_emulateFullscreen.Checked = true;
-            this.checkBox_emulateFullscreen.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_emulateFullscreen.Location = new System.Drawing.Point(13, 21);
-            this.checkBox_emulateFullscreen.Name = "checkBox_emulateFullscreen";
-            this.checkBox_emulateFullscreen.Size = new System.Drawing.Size(122, 17);
-            this.checkBox_emulateFullscreen.TabIndex = 0;
-            this.checkBox_emulateFullscreen.Text = "Emulate Fullscreen";
-            this.checkBox_emulateFullscreen.UseVisualStyleBackColor = true;
-            this.checkBox_emulateFullscreen.CheckedChanged += new System.EventHandler(this.CheckBoxes);
+            this.checkBox_showGamingTime.AutoSize = true;
+            this.checkBox_showGamingTime.Checked = true;
+            this.checkBox_showGamingTime.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_showGamingTime.Location = new System.Drawing.Point(13, 67);
+            this.checkBox_showGamingTime.Name = "checkBox_showGamingTime";
+            this.checkBox_showGamingTime.Size = new System.Drawing.Size(124, 17);
+            this.checkBox_showGamingTime.TabIndex = 2;
+            this.checkBox_showGamingTime.Text = "Show Gaming Time";
+            this.checkBox_showGamingTime.UseVisualStyleBackColor = true;
+            this.checkBox_showGamingTime.CheckedChanged += new System.EventHandler(this.CheckBoxes);
             // 
             // checkBox_showClock
             // 
@@ -127,18 +106,42 @@
             this.checkBox_showClock.UseVisualStyleBackColor = true;
             this.checkBox_showClock.CheckedChanged += new System.EventHandler(this.CheckBoxes);
             // 
-            // checkBox_showGamingTime
+            // checkBox_emulateFullscreen
             // 
-            this.checkBox_showGamingTime.AutoSize = true;
-            this.checkBox_showGamingTime.Checked = true;
-            this.checkBox_showGamingTime.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_showGamingTime.Location = new System.Drawing.Point(13, 67);
-            this.checkBox_showGamingTime.Name = "checkBox_showGamingTime";
-            this.checkBox_showGamingTime.Size = new System.Drawing.Size(124, 17);
-            this.checkBox_showGamingTime.TabIndex = 2;
-            this.checkBox_showGamingTime.Text = "Show Gaming Time";
-            this.checkBox_showGamingTime.UseVisualStyleBackColor = true;
-            this.checkBox_showGamingTime.CheckedChanged += new System.EventHandler(this.CheckBoxes);
+            this.checkBox_emulateFullscreen.AutoSize = true;
+            this.checkBox_emulateFullscreen.Checked = true;
+            this.checkBox_emulateFullscreen.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_emulateFullscreen.Location = new System.Drawing.Point(13, 21);
+            this.checkBox_emulateFullscreen.Name = "checkBox_emulateFullscreen";
+            this.checkBox_emulateFullscreen.Size = new System.Drawing.Size(122, 17);
+            this.checkBox_emulateFullscreen.TabIndex = 0;
+            this.checkBox_emulateFullscreen.Text = "Emulate Fullscreen";
+            this.checkBox_emulateFullscreen.UseVisualStyleBackColor = true;
+            this.checkBox_emulateFullscreen.CheckedChanged += new System.EventHandler(this.CheckBoxes);
+            // 
+            // button_underworld
+            // 
+            this.button_underworld.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_underworld.Enabled = false;
+            this.button_underworld.Image = global::SacredUnderworldHelper.Properties.Resources.Sacred_Addon_new_4;
+            this.button_underworld.Location = new System.Drawing.Point(149, 6);
+            this.button_underworld.Name = "button_underworld";
+            this.button_underworld.Size = new System.Drawing.Size(135, 135);
+            this.button_underworld.TabIndex = 1;
+            this.button_underworld.UseVisualStyleBackColor = true;
+            this.button_underworld.Click += new System.EventHandler(this.Launch);
+            // 
+            // button_sacred
+            // 
+            this.button_sacred.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_sacred.Enabled = false;
+            this.button_sacred.Image = global::SacredUnderworldHelper.Properties.Resources.Sacred_new_4;
+            this.button_sacred.Location = new System.Drawing.Point(8, 6);
+            this.button_sacred.Name = "button_sacred";
+            this.button_sacred.Size = new System.Drawing.Size(135, 135);
+            this.button_sacred.TabIndex = 0;
+            this.button_sacred.UseVisualStyleBackColor = true;
+            this.button_sacred.Click += new System.EventHandler(this.Launch);
             // 
             // MainForm
             // 
@@ -147,6 +150,7 @@
             this.ClientSize = new System.Drawing.Size(300, 271);
             this.Controls.Add(this.tabControl);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainForm";

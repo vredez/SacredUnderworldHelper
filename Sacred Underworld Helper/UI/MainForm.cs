@@ -8,15 +8,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-namespace Sacred_Underworld_Helper.UI
+namespace SacredUnderworldHelper.UI
 {
     public partial class MainForm : Form
     {
         Configuration config;
         
         SacredLauncher launcher;
-        SacredSettings sacredSettings;
-        SacredSettings underworldSettings;
         
         public MainForm()
         {
@@ -28,30 +26,35 @@ namespace Sacred_Underworld_Helper.UI
 
             launcher = new SacredLauncher();
             launcher.SacredExited += launcher_SacredExited;
-
+            
             if (launcher.IsSacredAvailable)
             {
                 button_sacred.Enabled = true;
-                sacredSettings = new SacredSettings(Path.Combine(launcher.SacredDirectory, "settings.cfg"));
-                tabControl.TabPages.Add(new SettingsTab("Sacred Settings", sacredSettings));
+                tabControl.TabPages.Add(new SettingsTab("Sacred Settings", launcher.SacredSettings));
             }
 
             if (launcher.IsUnderworldAvailable)
             {
                 button_underworld.Enabled = true;
-                underworldSettings = new SacredSettings(Path.Combine(launcher.UnderworldDirectory, "settings.cfg"));
-                tabControl.TabPages.Add(new SettingsTab("Underworld Settings", underworldSettings));
+                tabControl.TabPages.Add(new SettingsTab("Underworld Settings", launcher.UnderworldSettings));
             }
+
+            CheckBoxes(null, EventArgs.Empty); //Intialize tweak flags
+        }
+
+        void launcher_SacredExited(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             base.OnFormClosed(e);
 
-            if (sacredSettings != null)
-                sacredSettings.Save();
-            if (underworldSettings != null)
-                underworldSettings.Save();
+            if (launcher.SacredSettings != null)
+                launcher.SacredSettings.Save();
+            if (launcher.UnderworldSettings != null)
+                launcher.UnderworldSettings.Save();
 
             SaveSettings();
         }
@@ -72,17 +75,24 @@ namespace Sacred_Underworld_Helper.UI
             config.Save();
         }
 
-        void launcher_SacredExited(object sender, EventArgs e)
-        {
-            
-        }
-
         private void CheckBoxes(object sender, EventArgs e)
         {
             if (!checkBox_emulateFullscreen.Checked)
             {
                 checkBox_showClock.Checked = checkBox_showGamingTime.Checked = false;
             }
+
+            launcher.EmulateFullScreen = checkBox_emulateFullscreen.Checked;
+            launcher.ShowClock = checkBox_showClock.Checked;
+            launcher.ShowGamingTime = checkBox_showGamingTime.Checked;
+        }
+
+        private void Launch(object sender, EventArgs e)
+        {
+            if (sender == button_sacred)
+                launcher.LaunchSacred();
+            else
+                launcher.LaunchUnderworld();
         }
     }
 }

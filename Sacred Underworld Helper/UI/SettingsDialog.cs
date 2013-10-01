@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Sacred_Underworld_Helper.UI
+namespace SacredUnderworldHelper.UI
 {
 	public partial class SettingsDialog : Form
 	{

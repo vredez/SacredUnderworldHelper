@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace Sacred_Underworld_Helper
+namespace SacredUnderworldHelper
 {
     class SacredSettings
     {
