@@ -58,7 +58,7 @@ namespace SacredUnderworldHelper
 
         public void Save(string configFile)
         {
-            using (FileStream fs = new FileStream(configFile, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(configFile, FileMode.Create))
             {
                 using (StreamWriter sw = new StreamWriter(fs))
                 {
