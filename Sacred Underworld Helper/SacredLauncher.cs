@@ -223,7 +223,8 @@ namespace SacredUnderworldHelper
 
         void ProcExited(object sender, EventArgs e)
         {
-            StopFullscreenEmulation();
+            if(emulateFullScreen)
+                StopFullscreenEmulation();
             proc = null;
             OnSacredExited();
         }
