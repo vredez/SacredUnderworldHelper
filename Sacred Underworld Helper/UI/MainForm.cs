@@ -77,6 +77,8 @@ namespace SacredUnderworldHelper.UI
 
         private void CheckBoxes(object sender, EventArgs e)
         {
+            if (launcher == null) return;
+
             if (!checkBox_emulateFullscreen.Checked)
             {
                 checkBox_showClock.Checked = checkBox_showGamingTime.Checked = false;
