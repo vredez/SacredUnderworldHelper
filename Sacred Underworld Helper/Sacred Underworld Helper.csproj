@@ -68,6 +68,7 @@
     </Compile>
     <Compile Include="WinAPI\DEVMODE1.cs" />
     <Compile Include="WinAPI\Win32.cs" />
+    <Compile Include="WinAPI\WinTweak.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

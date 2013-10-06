@@ -64,6 +64,7 @@ namespace SacredUnderworldHelper.UI
             checkBox_emulateFullscreen.Checked = config["EMULATE_FULLSCREEN"] == "TRUE";
             checkBox_showClock.Checked = config["SHOW_CLOCK"] == "TRUE";
             checkBox_showGamingTime.Checked = config["SHOW_GAMING_TIME"] == "TRUE";
+            checkBox_potbot.Checked = config["POT_BOT"] == "TRUE";
         }
 
         void SaveSettings()
@@ -71,6 +72,7 @@ namespace SacredUnderworldHelper.UI
             config["EMULATE_FULLSCREEN"] = checkBox_emulateFullscreen.Checked ? "TRUE" : "FALSE";
             config["SHOW_CLOCK"] = checkBox_showClock.Checked ? "TRUE" : "FALSE";
             config["SHOW_GAMING_TIME"] = checkBox_showGamingTime.Checked ? "TRUE" : "FALSE";
+            config["POT_BOT"] = checkBox_potbot.Checked ? "TRUE" : "FALSE";
 
             config.Save();
         }
@@ -84,9 +86,16 @@ namespace SacredUnderworldHelper.UI
                 checkBox_showClock.Checked = checkBox_showGamingTime.Checked = false;
             }
 
+            if (launcher.UnderworldVersion != "2.0.2.8")
+            {
+                checkBox_potbot.Checked = false;
+            }
+            
+
             launcher.EmulateFullScreen = checkBox_emulateFullscreen.Checked;
             launcher.ShowClock = checkBox_showClock.Checked;
             launcher.ShowGamingTime = checkBox_showGamingTime.Checked;
+            launcher.PotBot = checkBox_potbot.Checked;
         }
 
         private void Launch(object sender, EventArgs e)

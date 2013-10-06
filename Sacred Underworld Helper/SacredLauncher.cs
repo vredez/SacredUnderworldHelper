@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using System.Runtime.InteropServices;
 using SacredUnderworldHelper.WinAPI;
 using System.Drawing;
+using System.Threading;
 
 namespace SacredUnderworldHelper
 {
@@ -22,11 +23,12 @@ namespace SacredUnderworldHelper
         bool emulateFullScreen;
         bool showClock;
         bool showGamingTime;
+        bool potBot;
 
         Process proc;
 
         BlackScreen blackScreen;
-        Timer timer;
+        System.Windows.Forms.Timer timer;
 
         Size nativeResolution;
         Size emulationResolution;
@@ -104,6 +106,12 @@ namespace SacredUnderworldHelper
             set { showGamingTime = value; }
         }
 
+        public bool PotBot
+        {
+            get { return potBot; }
+            set { potBot = value; }
+        }
+
         public SacredSettings SacredSettings
         {
             get { return sacredSettings; }
@@ -160,7 +168,7 @@ namespace SacredUnderworldHelper
                 underworldSettings = new SacredSettings(Path.Combine(UnderworldDirectory, "settings.cfg"));
             }
 
-            timer = new Timer();
+            timer = new System.Windows.Forms.Timer();
             timer.Interval = 100;
             timer.Tick += TimerTick;
 
@@ -219,6 +227,9 @@ namespace SacredUnderworldHelper
 
             proc.Exited += ProcExited;
             proc.Start();
+
+            if (potBot)
+                ThreadPool.QueueUserWorkItem(PotBotTask, 10);
         }
 
         void ProcExited(object sender, EventArgs e)
@@ -310,5 +321,48 @@ namespace SacredUnderworldHelper
             if (startbutton_handle != 0)
                 Win32.ShowWindow(startbutton_handle, visibility ? Win32.SW_SHOW : Win32.SW_HIDE);
         }
+
+        void PotBotTask(object data)
+        {
+            int interval = (int)data;
+            IntPtr processHandle = Win32.OpenProcess(Win32.ProcessAccess.VmRead, false, proc.Id);
+
+            int[] max_hp_offsets = { (int)proc.MainModule.BaseAddress + 0x6D3BC0, 0x4, 0x4, 0x4D4 };
+            int[] cur_hp_offsets = { (int)proc.MainModule.BaseAddress + 0x6D3BC0, 0x4, 0x4, 0x4D8 };
+
+            int max_hp_address;
+            int cur_hp_address;
+
+            byte[] dump = new byte[4];
+
+            int max_hp;
+            int cur_hp;
+
+            while (potBot && proc != null && !proc.HasExited)
+            {
+                max_hp_address = WinTweak.ReadPointer(processHandle, max_hp_offsets);
+                cur_hp_address = WinTweak.ReadPointer(processHandle, cur_hp_offsets);
+
+                if (max_hp_address >= proc.MainModule.BaseAddress.ToInt32() && cur_hp_address >= proc.MainModule.BaseAddress.ToInt32())
+                {
+                    Array.Clear(dump, 0, dump.Length);
+                    WinTweak.ReadMemory(processHandle, max_hp_address, dump);
+                    max_hp = BitConverter.ToInt32(dump, 0);
+
+                    Array.Clear(dump, 0, dump.Length);
+                    WinTweak.ReadMemory(processHandle, cur_hp_address, dump);
+                    cur_hp = BitConverter.ToInt32(dump, 0);
+
+                    if ((float)cur_hp / max_hp <= 0.2f)
+                    {
+                        WinTweak.SendKeyStroke(proc.MainWindowHandle, Keys.Space);
+                    }
+                }
+                Thread.Sleep(interval);
+            }
+
+            Win32.CloseHandle(processHandle);
+        }
+        
     }
 }

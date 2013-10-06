@@ -37,6 +37,7 @@
             this.checkBox_emulateFullscreen = new System.Windows.Forms.CheckBox();
             this.button_underworld = new System.Windows.Forms.Button();
             this.button_sacred = new System.Windows.Forms.Button();
+            this.checkBox_potbot = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tab_launcher.SuspendLayout();
             this.groupBox_tweaks.SuspendLayout();
@@ -49,7 +50,7 @@
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(300, 271);
+            this.tabControl.Size = new System.Drawing.Size(300, 292);
             this.tabControl.TabIndex = 0;
             // 
             // tab_launcher
@@ -60,7 +61,7 @@
             this.tab_launcher.Location = new System.Drawing.Point(4, 22);
             this.tab_launcher.Name = "tab_launcher";
             this.tab_launcher.Padding = new System.Windows.Forms.Padding(3);
-            this.tab_launcher.Size = new System.Drawing.Size(292, 245);
+            this.tab_launcher.Size = new System.Drawing.Size(292, 266);
             this.tab_launcher.TabIndex = 0;
             this.tab_launcher.Text = "Launcher";
             this.tab_launcher.UseVisualStyleBackColor = true;
@@ -70,12 +71,13 @@
             this.groupBox_tweaks.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox_tweaks.Controls.Add(this.checkBox_potbot);
             this.groupBox_tweaks.Controls.Add(this.checkBox_showGamingTime);
             this.groupBox_tweaks.Controls.Add(this.checkBox_showClock);
             this.groupBox_tweaks.Controls.Add(this.checkBox_emulateFullscreen);
             this.groupBox_tweaks.Location = new System.Drawing.Point(8, 147);
             this.groupBox_tweaks.Name = "groupBox_tweaks";
-            this.groupBox_tweaks.Size = new System.Drawing.Size(276, 92);
+            this.groupBox_tweaks.Size = new System.Drawing.Size(276, 113);
             this.groupBox_tweaks.TabIndex = 2;
             this.groupBox_tweaks.TabStop = false;
             this.groupBox_tweaks.Text = "Tweaks";
@@ -143,11 +145,24 @@
             this.button_sacred.UseVisualStyleBackColor = true;
             this.button_sacred.Click += new System.EventHandler(this.Launch);
             // 
+            // checkBox_potbot
+            // 
+            this.checkBox_potbot.AutoSize = true;
+            this.checkBox_potbot.Checked = true;
+            this.checkBox_potbot.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_potbot.Location = new System.Drawing.Point(13, 90);
+            this.checkBox_potbot.Name = "checkBox_potbot";
+            this.checkBox_potbot.Size = new System.Drawing.Size(64, 17);
+            this.checkBox_potbot.TabIndex = 3;
+            this.checkBox_potbot.Text = "Pot Bot";
+            this.checkBox_potbot.UseVisualStyleBackColor = true;
+            this.checkBox_potbot.CheckedChanged += new System.EventHandler(this.CheckBoxes);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(300, 271);
+            this.ClientSize = new System.Drawing.Size(300, 292);
             this.Controls.Add(this.tabControl);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -174,5 +189,6 @@
         private System.Windows.Forms.CheckBox checkBox_showGamingTime;
         private System.Windows.Forms.CheckBox checkBox_showClock;
         private System.Windows.Forms.CheckBox checkBox_emulateFullscreen;
+        private System.Windows.Forms.CheckBox checkBox_potbot;
     }
 }
