@@ -335,8 +335,9 @@ namespace SacredUnderworldHelper
 
             byte[] dump = new byte[4];
 
-            int max_hp;
-            int cur_hp;
+            int max_hp = 0;
+            int cur_hp = 0;
+            int old_hp = 0;
 
             while (potBot && proc != null && !proc.HasExited)
             {
@@ -351,17 +352,28 @@ namespace SacredUnderworldHelper
 
                     Array.Clear(dump, 0, dump.Length);
                     WinTweak.ReadMemory(processHandle, cur_hp_address, dump);
+                    old_hp = cur_hp;
                     cur_hp = BitConverter.ToInt32(dump, 0);
 
-                    if ((float)cur_hp / max_hp <= 0.2f)
+                    if (ConsumePot(cur_hp, old_hp, max_hp))
                     {
                         WinTweak.SendKeyStroke(proc.MainWindowHandle, Keys.Space);
+                        Thread.Sleep(100);
                     }
                 }
                 Thread.Sleep(interval);
             }
 
             Win32.CloseHandle(processHandle);
+        }
+
+        bool ConsumePot(float hp, float oldHp, float maxHp)
+        {
+            float damage = oldHp - hp;
+
+            if (hp / maxHp <= 0.25f || (hp - damage) / maxHp <= 0.25f) return true;
+
+            return false;
         }
         
     }
